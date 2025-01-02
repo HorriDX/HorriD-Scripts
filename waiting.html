@@ -1,0 +1,102 @@
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Waiting Projects - HorriD Scripts</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"/>
+  <style>
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Hide scrollbar for IE, Edge and Firefox */
+    .no-scrollbar {
+      -ms-overflow-style: none;  /* IE and Edge */
+      scrollbar-width: none;  /* Firefox */
+    }
+  </style>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      loadWaitingProjects();
+    });
+
+    function loadWaitingProjects() {
+      const waitingProjects = JSON.parse(localStorage.getItem('waitingProjects')) || [];
+      waitingProjects.forEach(project => addWaitingProjectToDOM(project));
+    }
+
+    function addWaitingProjectToDOM(project) {
+      const projectContainer = document.createElement('div');
+      projectContainer.classList.add('bg-gray-800', 'p-4', 'rounded-lg', 'shadow-lg', 'flex', 'flex-col');
+      projectContainer.innerHTML = `
+        <img src="${project.preview}" alt="Project preview image" class="w-full rounded-lg" height="150" width="150"/>
+        <h3 class="mt-2 font-semibold">${project.name}</h3>
+        <p class="text-gray-400 text-sm">${project.description}</p>
+        <div class="flex justify-between mt-4">
+          <button class="bg-gray-700 text-white px-4 py-2 rounded-full hover:bg-gray-600" onclick="approveProject('${project.name}')">Approve</button>
+          <button class="bg-gray-700 text-white px-4 py-2 rounded-full hover:bg-gray-600" onclick="rejectProject('${project.name}')">Reject</button>
+        </div>
+      `;
+
+      document.getElementById('waitingProjectsGrid').appendChild(projectContainer);
+    }
+
+    function approveProject(name) {
+      const waitingProjects = JSON.parse(localStorage.getItem('waitingProjects')) || [];
+      const projectIndex = waitingProjects.findIndex(project => project.name === name);
+      if (projectIndex !== -1) {
+        const project = waitingProjects.splice(projectIndex, 1)[0];
+        saveProject(project);
+        localStorage.setItem('waitingProjects', JSON.stringify(waitingProjects));
+        document.getElementById('waitingProjectsGrid').innerHTML = '';
+        loadWaitingProjects();
+      }
+    }
+
+    function rejectProject(name) {
+      const waitingProjects = JSON.parse(localStorage.getItem('waitingProjects')) || [];
+      const projectIndex = waitingProjects.findIndex(project => project.name === name);
+      if (projectIndex !== -1) {
+        waitingProjects.splice(projectIndex, 1);
+        localStorage.setItem('waitingProjects', JSON.stringify(waitingProjects));
+        document.getElementById('waitingProjectsGrid').innerHTML = '';
+        loadWaitingProjects();
+      }
+    }
+
+    function saveProject(project) {
+      const projects = JSON.parse(localStorage.getItem('projects')) || [];
+      projects.push(project);
+      localStorage.setItem('projects', JSON.stringify(projects));
+    }
+  </script>
+</head>
+<body class="bg-gray-900 text-white font-roboto">
+  <!-- Navbar -->
+  <nav class="bg-gray-800 p-4">
+    <div class="container mx-auto flex justify-between items-center">
+      <div class="flex items-center">
+        <img alt="HorriD Scripts logo, a green circle with three curved lines inside representing sound waves" class="h-10 w-10" height="50" src="https://cdn-icons-png.flaticon.com/512/4334/4334101.png" width="50"/>
+        <span class="ml-3 text-xl font-bold">HorriD Scripts</span>
+      </div>
+      <ul class="flex space-x-4 mx-auto">
+        <li><a class="hover:text-gray-500" href="index.html">Home</a></li>
+        <li><a class="hover:text-gray-500" href="waiting.html">Waiting</a></li>
+      </ul>
+    </div>
+  </nav>
+  <!-- Main Content -->
+  <div class="container mx-auto mt-8">
+    <!-- Waiting Projects Section -->
+    <section class="mt-12">
+      <h2 class="text-2xl font-bold mb-4">Waiting Projects</h2>
+      <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4" id="waitingProjectsGrid">
+        <!-- Waiting Project Items will be dynamically added here -->
+      </div>
+    </section>
+  </div>
+</body>
+</html>
