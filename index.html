@@ -132,7 +132,7 @@
 
     function deleteProject() {
       const passwordInput = document.getElementById('deletePassword').value;
-      const hashedPassword = "736f706f706470"; // Hexadecimal representation of "sopopdp"
+      const hashedPassword = "736f706f706470";
 
       if (passwordInput === hexToString(hashedPassword)) {
         const projectId = document.getElementById('deleteProjectButton').dataset.projectId;
@@ -143,7 +143,7 @@
         loadProjects();
         closeDeleteModal();
         closeProjectModal();
-        failedAttempts = 0; // Reset failed attempts on successful deletion
+        failedAttempts = 0;
       } else {
         failedAttempts++;
         document.getElementById('deleteError').innerText = 'Incorrect password!';
